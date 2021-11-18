@@ -3,6 +3,9 @@ Simply transformation of data between gui and controlled object
 
 | [Github](https://github.com/awelles/lil-gui-inout) | [Live](https://awelles.github.io/lil-gui-inout) |
 
+
+[Demo](https://awelles.github.io/lil-gui-inout/example.html)
+
 ## create Filter
 ```js
 const filter = new Filter( object, property, inFunction, outFunction );
@@ -73,5 +76,4 @@ gui.useFilter( v => f => { v.call( this ), console.log( 'world' ); } )
 // world
 ```
 
-[Examples](example.html)
 
