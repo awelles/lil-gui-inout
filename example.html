@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>lil-gui-inout Example</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div id="params"></div>
+    <script type="module">
+
+        import GUI from './lil-gui/lil-gui.esm.js';
+        import { Filter, useFilter } from './inout/lil-gui-inout.esm.js';
+
+        const gui = new GUI();
+
+        const params = {
+            boolean: true,
+            number1: 0.5,
+            number2: 0,
+            useFilter: 0,
+            string1: 'Hello World',
+            color: 'rgb(255,0,0)',
+            function() { console.log( 'hi' ) }
+        };
+
+        // negate boolean
+        // new Filter( object, property, inFunction, outFunction )
+        const f_boolean = new Filter( params, 'boolean', v => !v, v => !v );
+        gui.add( f_boolean, 'boolean' ).name( 'negate boolean' );
+
+        // double number
+        const f_number1 = new Filter( params, 'number1', v => 2 * v, v => v / 2 );
+        gui.add( f_number1, 'number1', 0, 2 )
+            .name( 'double number' );
+
+        // .listen()
+        gui.add( new Filter( params, 'number2', v => v + 1, v => v - 1 ), 'number2' )
+            .name( ".listen()" ).listen();
+        gui.add( params, 'number2' ).listen();
+
+        // useFilter helper: useFilter(fIn,fOut,gui)
+        const uf1 = useFilter( x => x + 10, x => x - 10, gui )
+            // everything from this point on is the same as lil-gui
+            .add( params, 'useFilter', 10, 20 )
+            .name( 'useFilter() helper' ).listen();
+
+        //  or extend GUI class and omit gui argument
+        GUI.prototype.useFilter = useFilter;
+        gui.useFilter( x => 10 + x * 9, x => ( x - 10 ) / 9 )
+            .add( params, 'useFilter', 10, 100 )
+            .name( 'gui.useFilter' ).listen();
+        gui.addFolder( 'aFolder' ).useFilter( x => x * 3, x => x / 3 )
+            .add( params, 'useFilter', 0, 30 )
+            .name( 'folder.userFilter' ).listen();
+
+        // control string with options
+        gui.useFilter( s => s.substring( 6 ), s => 'Hello ' + s )
+            .add( params, 'string1', [ 'World', 'Squirrel' ] )
+            .name( 'string w/ choices' )
+        // or another text input
+        gui.useFilter( s => s.substring( 6 ), s => 'Hello ' + s )
+            .add( params, 'string1' ).listen()
+            .name( 'or another text' );
+
+        function hexToRgb( hex ) {
+            var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec( hex );
+            return `rgb(${ parseInt( result[ 1 ], 16 ) },${ parseInt( result[ 2 ], 16 ) },${ parseInt( result[ 3 ], 16 ) })`;
+        }
+        // support rgb string output
+        gui.useFilter( v => v, hexToRgb )
+            .addColor( params, 'color' )
+            .name( 'rgb-string out' )
+
+        // wrap a function button
+        gui.useFilter( v => f => { v.call( this ), console.log( 'world' ); } )
+            .add( params, 'function' ).name( 'wrap function' );
+
+        // --------------------------------------------------
+
+        function paramsString( params ) {
+            return '<pre>' + JSON.stringify( params, null, 2 ) + '</pre>';
+        }
+        function printParams() {
+            document.getElementById( 'params' ).innerHTML = paramsString( params );
+        }
+
+        gui.onChange( printParams );
+        printParams();
+
+    </script>
+</body>
+
+</html>
