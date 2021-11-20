@@ -6,8 +6,6 @@
 
 import { GUI } from '../lil-gui/lil-gui.esm.js';
 
-// TODO: implement 'three.js+datgui'-like intermediate object for when no inFiunction
-
 /**
  * Base filter class
  */
@@ -28,10 +26,10 @@ class Filter {
 }
 
 /**
- * Returns a object with add/addColor methods that can be called the same as gui's
- * @param {*} inFilter 
- * @param {*} outFilter 
- * @param {*} gui 
+ * Returns a object with add/addColor methods that can be called the same as GUI's
+ * @param {function} inFilter 
+ * @param {function} outFilter 
+ * @param {GUI} gui 
  * @returns 
  */
 function useFilter ( inFilter, outFilter, gui ) {
