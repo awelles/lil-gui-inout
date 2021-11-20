@@ -1,6 +1,4 @@
 /**
- * lil-gui
- * https://lil-gui.georgealways.com
  * @version 0.1.0
  * @author Aaron Welles
  * @license MIT
