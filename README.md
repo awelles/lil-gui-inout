@@ -1,80 +1,32 @@
 # lil-gui-inout
-Simply transformation of data between gui and controlled object
+Simply a bit of the transformation of data between gui and controlled object
 
-| [Github](https://github.com/awelles/lil-gui-inout) | [Live](https://awelles.github.io/lil-gui-inout) |
+| [Github](https://github.com/awelles/lil-gui-inout) | [Homepage](https://awelles.github.io/lil-gui-inout) | [Live Examples](https://awelles.github.io/lil-gui-inout/examples.html) |
 
-## Preserving a number's string type
-
-### Method 1:
+#### Example params object
 ```js
 const params = {
-    number: 0.5,
-    numberStr: '0.5',
-    numberStr2: '0.5',
-}
-
-/*
-  Create an intermidiate object
-  use onChange to update original params object
-  Works fine, but .listen() ability is lost
-*/
-const obj1 = { numberStr: parseFloat( params.numberStr ) };
-gui.add( obj1, 'numberStr', 0, 1 ).step( 0.01 )
-    .onChange( () => {
-        params.numberStr = obj1.numberStr.toString();
-    } )
-    .listen();
+    boolean: true,
+    number1: 0.5,
+    number2: 0,
+    useFilter: 0,
+    string1: 'Hello World',
+    color: 'rgb(255,0,0)',
+    function() { console.log( 'hi' ) }
+};
 ```
-
-### Method 2:
-```js
-/*
-  Create an intermidiate object with getter/setter
-  .listen() works with converting converting on every getValue()
-  .onChange()/onFinishChange() are still free, as conversion
-  is invisible to controller
-*/
-const obj2 = {};
-Object.defineProperties( obj2, {
-num2: {
-    get: function () { return parseFloat( params.numberStr2 ); },
-    set: function ( value ) { params.numberStr2 = value.toString(); }
-},
-} );
-gui.add( obj2, 'num2', 0, 1 ).step( 0.01 )
-.listen();
-```
-
-[handling-custom-properties Live Example](https://awelles.github.io/lil-gui-inout/handling-custom-properties.html)
-
-## Using inout
 
 ### Filter class
 ```js
 import { Filter } from './inout/lil-gui-inout.esm.js';
-```
 
-#### create Filter
-```js
-const filter = new Filter( object, property, inFunction, outFunction );
-```
-
-#### Negate Boolean
-```js
+// Controller shows negated property
 const filter = new Filter( params, 'boolean', v => !v, v => !v );
 gui.add( filter, 'boolean' );
-```
 
-#### Double number
-```js
-const filter = new Filter( params, 'number', v => 2 * v, v => v / 2 );
-gui.add( filter, 'number', 0, 2 );
-```
-
-#### With .listen()
-```js
-gui.add( new Filter( params, 'number', v => v + 1, v => v - 1 ), 'number' )
-    .listen();
+// Controller shows twice property
+const filter2 = new Filter( params, 'number', v => 2 * v, v => v / 2 );
+gui.add( filter2, 'number', 0, 2 );
 ```
 
 ### useFilter() helper
@@ -100,7 +52,7 @@ gui.useFilter( x => 10 + x * 9, x => ( x - 10 ) / 9 )
     .name( 'My Name' )
     .listen();
 
-// folders
+// or a folder
 gui.addFolder( 'aFolder' ).useFilter( x => x * 3, x => x / 3 )
     .add( params, 'number', 0, 30 )
     .listen();
@@ -117,16 +69,4 @@ gui.useFilter( v => v, hexToRgb )
     .addColor( params, 'color' )
     .listen();
 ```
-
-### Wrap a function 
-```js
-const params = { function() { console.log ('hi'); } }
-
-gui.useFilter( v => f => { v.call( this ), console.log( 'world' ); } )
-    .add( params, 'function' );
-
-// hello
-// world
-```
-[inout Live Examples](https://awelles.github.io/lil-gui-inout/inout-examples.html)
 

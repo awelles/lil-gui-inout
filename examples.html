@@ -22,8 +22,7 @@
             number2: 0,
             useFilter: 0,
             string1: 'Hello World',
-            color: 'rgb(255,0,0)',
-            function() { console.log( 'hi' ) }
+            color: 'rgb(255,0,0)'
         };
 
         // negate boolean
@@ -72,10 +71,9 @@
         gui.useFilter( v => v, hexToRgb )
             .addColor( params, 'color' )
             .name( 'rgb-string out' )
-
-        // wrap a function button
-        gui.useFilter( v => f => { v.call( this ), console.log( 'world' ); } )
-            .add( params, 'function' ).name( 'wrap function' );
+            .listen()
+            .onChange( ( v ) => { console.log( 'oc', v ); } )
+            .onFinishChange( ( v ) => { console.log( 'ofc', v ); } )
 
         // --------------------------------------------------
 
@@ -88,7 +86,6 @@
 
         gui.onChange( printParams );
         printParams();
-
     </script>
 </body>
 
