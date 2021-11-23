@@ -7,12 +7,10 @@ Simply a bit of the transformation of data between gui and controlled object
 ```js
 const params = {
     boolean: true,
-    number1: 0.5,
-    number2: 0,
-    useFilter: 0,
+    number: 0,
     string1: 'Hello World',
     color: 'rgb(255,0,0)',
-    function() { console.log( 'hi' ) }
+    colorhsv: { h: 120, s: 1, v: 1 },    
 };
 ```
 
@@ -70,3 +68,43 @@ gui.useFilter( v => v, hexToRgb )
     .listen();
 ```
 
+### HSV Object 
+```js
+function rgbString2hsvObject( rgb ) {
+    let a = rgb.slice( 1 ).match( /.{1,2}/g ).map( x => parseInt( x, 16 ) ).map( x => x / 255 );
+    let r = a[ 0 ], g = a[ 1 ], b = a[ 2 ];
+    let v = Math.max( r, g, b ), n = v - Math.min( r, g, b );
+    let h = n && ( ( v == r ) ? ( g - b ) / n : ( ( v == g ) ? 2 + ( b - r ) / n : 4 + ( r - g ) / n ) );
+    let hsv = { h: 60 * ( h < 0 ? h + 6 : h ), s: v && n / v, v: v };
+    return hsv;
+}
+
+function hsvObj2rgbStringect( hsv ) {
+    let { h, s, v } = hsv;
+    let f = ( n, k = ( n + h / 60 ) % 6 ) => v - v * s * Math.max( Math.min( k, 4 - k, 1 ), 0 );
+    let rgb = [ Math.round( 255 * f( 5 ) ), Math.round( 255 * f( 3 ) ), Math.round( 255 * f( 1 ) ) ];
+    let str = `rgb(${ rgb.join( ',' ) })`;
+    return str;
+}
+
+gui.useFilter( hsvObj2rgbStringect, rgbString2hsvObject )
+    .addColor( params, 'colorhsv' );
+```            
+
+### #RRGGBBAA string
+```js
+// support #rrggbbaa string
+gui.useFilter( 
+        x => `#${x.slice( 1, -2 )}`, 
+        x => x + params.rrggbbaa.slice( -2 ) 
+    )
+    .addColor( params, 'rrggbbaa' );
+
+// add a slider for its alpha
+gui.useFilter( 
+        x => parseInt(x.slice(-2),16), 
+        x => params.rrggbbaa.slice( 0,-2 ) + x.toString(16).padStart(2,0) 
+        )
+    .add( params, 'rrggbbaa', 0, 255 ).step( 1 )
+    .name('alpha');
+```
