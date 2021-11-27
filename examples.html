@@ -43,7 +43,7 @@
 
         // useFilter helper
         gui.add( params, 'useFilter', 0, 10, 0.1 ).name( 'x' ).listen();
-        
+
         const uf1 = useFilter( x => x + 10, x => x - 10, gui )
             // everything from this point on is the same as lil-gui
             .add( params, 'useFilter', 10, 20 )
@@ -54,8 +54,8 @@
         gui.useFilter( x => 100 - 5 * x, x => 20 - x / 5 )
             .add( params, 'useFilter', 50, 100 )
             .name( '100 - 5 * x' ).listen();
-            
-        gui.addFolder( 'aFolder' ).useFilter( x => x*x*x*x+10, x => (x-10)**(1/4) )
+
+        gui.addFolder( 'aFolder' ).useFilter( x => x * x * x * x + 10, x => ( x - 10 ) ** ( 1 / 4 ) )
             .add( params, 'useFilter', 10, 10010, 0.01 )
             .name( 'x^4 + 10' ).listen();
 
@@ -106,16 +106,16 @@
             .listen();
 
         // support #rrggbbaa string
-        gui.useFilter( x => `#${x.slice( 1, -2 )}`, x => x + params.rrggbbaa.slice( -2 ) )
+        gui.useFilter( x => `#${ x.slice( 1, -2 ) }`, x => x + params.rrggbbaa.slice( -2 ) )
             .addColor( params, 'rrggbbaa' );
 
         // and its alpha
-        gui.useFilter( 
-                x => parseInt(x.slice(-2),16), 
-                x => params.rrggbbaa.slice( 0,-2 ) + x.toString(16).padStart(2,0) 
-                )
+        gui.useFilter(
+            x => parseInt( x.slice( -2 ), 16 ),
+            x => params.rrggbbaa.slice( 0, -2 ) + x.toString( 16 ).padStart( 2, 0 )
+        )
             .add( params, 'rrggbbaa', 0, 255 ).step( 1 )
-            .name('rrggbbaa alpha');
+            .name( 'rrggbbaa alpha' );
 
         // --------------------------------------------------
 
@@ -129,7 +129,7 @@
         gui.onChange( printParams );
         printParams();
 
-        window.params = params; 
+        window.params = params;
 
     </script>
 </body>
