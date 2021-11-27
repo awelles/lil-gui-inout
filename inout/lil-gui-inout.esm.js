@@ -50,5 +50,23 @@ function useFilter ( inFilter, outFilter, gui ) {
     }
 }
 
+// GUI.prototype.addColorHEXRRGGBBAA = addColorHEXRRGGBBAA_alpha;
+// gui.addColorHEXRRGGBBAA(config, "color");
+function addColorHEXRRGGBBAA( obj, param, ...rest ) {
+    return this.useFilter( 
+        x=>obj[param].slice(0,-2),
+        x=> x + obj[param].slice( -2 ) 
+    ).addColor( obj, param, ...rest );
+}
+
+// GUI.prototype.addColorHEXRRGGBBAA_alpha = addColorHEXRRGGBB_alpha;
+// gui.addColorHEXRRGGBBAA_alpha(config, "color");
+function addColorHEXRRGGBBAA_alpha( obj, param, ...rest ) {
+    return this.useFilter( 
+        x=>parseInt(obj[param].slice( -2 ),16),
+        x=>obj[param].slice(0,-2) + x.toString(16).padStart(2,"0")                
+    ).add( obj, param, ...rest );
+}
+
 export default Filter;
-export { Filter, useFilter };
+export { Filter, useFilter, addColorHEXRRGGBBAA, addColorHEXRRGGBBAA_alpha };
